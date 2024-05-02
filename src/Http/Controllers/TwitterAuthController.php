@@ -15,9 +15,7 @@ class TwitterAuthController extends Controller
     /**
      * Redirect the user to the Twitter authentication page.
      *
-     * @param  TwitterService  $service
      *
-     * @return RedirectResponse
      * @throws RandomException
      */
     public function redirectToTwitter(TwitterService $service): RedirectResponse
@@ -30,10 +28,7 @@ class TwitterAuthController extends Controller
     /**
      * Obtain the user information from Twitter after authentication.
      *
-     * @param  Request  $request
-     * @param  TwitterService  $service
      *
-     * @return RedirectResponse
      * @throws InvalidStateException
      */
     public function handleTwitterCallback(Request $request, TwitterService $service): RedirectResponse

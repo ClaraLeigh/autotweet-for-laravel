@@ -13,7 +13,6 @@ class TwitterService
     /**
      * Prepare the authorization URL.
      *
-     * @return string
      * @throws RandomException
      */
     public function prepareAuthorizationUrl(): string
@@ -36,7 +35,6 @@ class TwitterService
     /**
      * Generate a random state.
      *
-     * @return string
      * @throws RandomException
      */
     protected function state(): string
@@ -45,13 +43,8 @@ class TwitterService
         return bin2hex(random_bytes(16));
     }
 
-
     /**
      * Generate a code challenge.
-     *
-     * @param  string  $str
-     *
-     * @return string
      */
     protected function codeChallenge(string $str): string
     {
@@ -64,10 +57,7 @@ class TwitterService
     /**
      * Handle the callback from Twitter.
      *
-     * @param  string  $state
-     * @param  string  $code
      *
-     * @return void
      * @throws InvalidStateException
      */
     public function handleCallback(string $state, string $code): void
