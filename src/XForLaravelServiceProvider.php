@@ -42,7 +42,7 @@ class XForLaravelServiceProvider extends PackageServiceProvider
         $package
             ->name('x-for-laravel')
             ->hasConfigFile()
-            ->hasMigration('create_x-for-laravel_table');
+            ->hasMigration('create_x_for_laravel_table');
     }
 
     /**
