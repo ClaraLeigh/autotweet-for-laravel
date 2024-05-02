@@ -10,9 +10,6 @@ use Illuminate\Notifications\Notification;
 
 class TwitterChannel
 {
-    /**
-     * @param  TwitterOAuth  $twitter
-     */
     public function __construct(protected TwitterOAuth $twitter)
     {
     }
@@ -21,9 +18,7 @@ class TwitterChannel
      * Send the given notification.
      *
      * @param  mixed  $notifiable  Should be an object that uses the Illuminate\Notifications\Notifiable trait.
-     * @param  Notification  $notification
      *
-     * @return void
      * @throws CouldNotSendNotification
      */
     public function send($notifiable, Notification $notification): void
@@ -56,7 +51,6 @@ class TwitterChannel
             throw CouldNotSendNotification::serviceRespondsNotSuccessful($this->twitter->getLastBody());
         }
 
-
         $tweetLog = new TweetLog();
         $tweetLog->fill([
             'tweet_id' => $twitterApiResponse->data->id,
@@ -74,10 +68,6 @@ class TwitterChannel
 
     /**
      * If it is a status update message and images are provided, add them.
-     *
-     * @param  TwitterMessage  $twitterMessage
-     *
-     * @return object
      */
     private function addImagesIfGiven(TwitterMessage $twitterMessage): object
     {

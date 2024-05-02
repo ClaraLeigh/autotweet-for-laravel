@@ -2,9 +2,9 @@
 
 namespace ClaraLeigh\XForLaravel\Tests;
 
+use ClaraLeigh\XForLaravel\XForLaravelServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use ClaraLeigh\XForLaravel\XForLaravelServiceProvider;
 
 class TestCase extends Orchestra
 {
