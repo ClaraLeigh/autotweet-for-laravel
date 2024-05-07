@@ -2,7 +2,6 @@
 
 namespace ClaraLeigh\XForLaravel;
 
-use Abraham\TwitterOAuth\TwitterOAuth;
 use ClaraLeigh\XForLaravel\Events\TweetPosted;
 use ClaraLeigh\XForLaravel\Exceptions\CouldNotSendNotification;
 use ClaraLeigh\XForLaravel\Models\TweetLog;
