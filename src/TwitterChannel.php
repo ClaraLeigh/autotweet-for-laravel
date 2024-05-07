@@ -6,11 +6,12 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 use ClaraLeigh\XForLaravel\Events\TweetPosted;
 use ClaraLeigh\XForLaravel\Exceptions\CouldNotSendNotification;
 use ClaraLeigh\XForLaravel\Models\TweetLog;
+use ClaraLeigh\XForLaravel\Services\TwitterService;
 use Illuminate\Notifications\Notification;
 
 class TwitterChannel
 {
-    public function __construct(protected TwitterOAuth $twitter)
+    public function __construct(protected TwitterService $service)
     {
     }
 
@@ -23,15 +24,12 @@ class TwitterChannel
      */
     public function send($notifiable, Notification $notification): void
     {
-        if (! method_exists($notifiable, 'routeNotificationFor') || ! method_exists($notification, 'toTwitter')) {
+        if (empty($notifiable->twitter_token) || ! method_exists($notification, 'toTwitter')) {
             return;
         }
 
-        // Get and set the user's Twitter authentication settings
-        $twitterSettings = $notifiable->routeNotificationFor('twitter');
-        $this->twitter->setOauthToken(
-            oauthToken: $twitterSettings['oauth_token'],
-            oauthTokenSecret: $twitterSettings['oauth_token_secret']
+        $this->service->api->setBearer(
+            $this->service->fetchOrUpdateAccessToken($notifiable)
         );
 
         $twitterMessage = $notification->toTwitter($notifiable);
@@ -39,7 +37,7 @@ class TwitterChannel
 
         $requestBody = $twitterMessage->getRequestBody();
 
-        $twitterApiResponse = $this->twitter->post(
+        $twitterApiResponse = $this->service->api->post(
             path: $twitterMessage->getApiEndpoint(),
             parameters: $requestBody,
             options: [
@@ -47,8 +45,8 @@ class TwitterChannel
             ]
         );
 
-        if ($this->twitter->getLastHttpCode() !== 201) {
-            throw CouldNotSendNotification::serviceRespondsNotSuccessful($this->twitter->getLastBody());
+        if ($this->service->api->getLastHttpCode() !== 201) {
+            throw CouldNotSendNotification::serviceRespondsNotSuccessful($this->service->api->getLastBody());
         }
 
         $tweetLog = new TweetLog();
@@ -72,11 +70,11 @@ class TwitterChannel
     private function addImagesIfGiven(TwitterMessage $twitterMessage): object
     {
         if (is_a($twitterMessage, TwitterStatusUpdate::class) && $twitterMessage->getImages()) {
-            $this->twitter->setTimeouts(10, 15);
+            $this->service->api->setTimeouts(10, 15);
 
             $twitterMessage->imageIds = collect($twitterMessage->getImages())
                 ->map(function (TwitterImage $image) {
-                    $media = $this->twitter->upload(
+                    $media = $this->service->api->upload(
                         path: 'media/upload',
                         parameters: ['media' => $image->getPath()]
                     );

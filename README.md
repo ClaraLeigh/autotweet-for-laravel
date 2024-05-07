@@ -30,6 +30,15 @@ php artisan vendor:publish --tag="x-for-laravel-migrations"
 php artisan migrate
 ```
 
+Update your user model's casts to include the `twitter_token` field:
+
+```php
+$casts = [
+    // Existing casts
+    'twitter_token' => 'object',
+];
+```
+
 You can publish the config file with:
 
 ```bash

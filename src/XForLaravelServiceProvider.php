@@ -3,6 +3,7 @@
 namespace ClaraLeigh\XForLaravel;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
+use ClaraLeigh\XForLaravel\Services\TwitterService;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -15,14 +16,16 @@ class XForLaravelServiceProvider extends PackageServiceProvider
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
 
         $this->app
-            ->when([TwitterChannel::class])
+            ->when([TwitterService::class])
             ->needs(TwitterOAuth::class)
             ->give(function () {
                 $api = new TwitterOAuth(
-                    consumerKey: config('services.x-for-laravel.consumer_key'),
-                    consumerSecret: config('services.x-for-laravel.consumer_secret'),
-                    oauthToken: config('services.x-for-laravel.access_token'),
-                    oauthTokenSecret: config('services.x-for-laravel.access_secret'),
+                    consumerKey: config('x-for-laravel.client_id'),
+                    consumerSecret: config('x-for-laravel.client_secret'),
+                    //                    consumerKey: config('x-for-laravel.consumer_key'),
+                    //                    consumerSecret: config('x-for-laravel.consumer_secret'),
+                    oauthToken: config('x-for-laravel.access_token'),
+                    oauthTokenSecret: config('x-for-laravel.access_secret'),
                 );
                 $api->setApiVersion('2');
 
@@ -42,6 +45,7 @@ class XForLaravelServiceProvider extends PackageServiceProvider
         $package
             ->name('x-for-laravel')
             ->hasConfigFile()
+            ->hasRoute('web')
             ->hasMigration('create_x_for_laravel_table');
     }
 

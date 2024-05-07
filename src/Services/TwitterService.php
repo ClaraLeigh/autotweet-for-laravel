@@ -4,12 +4,22 @@ declare(strict_types=1);
 
 namespace ClaraLeigh\XForLaravel\Services;
 
+use Abraham\TwitterOAuth\TwitterOAuth;
 use ClaraLeigh\XForLaravel\Exceptions\InvalidStateException;
 use ClaraLeigh\XForLaravel\XForLaravelServiceProvider;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\RequestException;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Random\RandomException;
 
 class TwitterService
 {
+    public function __construct(public TwitterOAuth $api)
+    {
+    }
+
     /**
      * Prepare the authorization URL.
      *
@@ -19,17 +29,17 @@ class TwitterService
     {
         $state = $this->state();
         $parameters = [
-            'scopes' => 'tweet.read users.read tweet.write offline.access',
-            'state' => $state, // This is a random string that you should validate when the user is redirected back to your app, to prevent CSRF attacks
+            'scope' => 'tweet.read users.read tweet.write offline.access', // 'tweet.read users.read tweet.write offline.access
             'response_type' => 'code',
-            'client_id' => config('x-for-laravel.consumer_key'),
-            'redirect_uri' => config('x-for-laravel.callback_url'),
-            'code_challenge' => $this->codeChallenge($state),
-            'code_challenge_method' => 'S256',
+            'client_id' => config('x-for-laravel.client_id'),
+            'redirect_uri' => url()->route('twitter.callback'), //url(config('x-for-laravel.callback_url')),
+            'state' => $state, // This is a random string that you should validate when the user is redirected back to your app, to prevent CSRF attacks
+            'code_challenge' => $state, // 'challenge', //$this->codeChallenge($state), //'S256'
+            'code_challenge_method' => 'plain',
         ];
         session(['twitter_state' => $state]);
 
-        return 'https://api.twitter.com/oauth2/authorize?'.http_build_query($parameters);
+        return 'https://twitter.com/i/oauth2/authorize?'.http_build_query($parameters);
     }
 
     /**
@@ -58,7 +68,10 @@ class TwitterService
      * Handle the callback from Twitter.
      *
      *
+     *
+     * @throws ConnectionException
      * @throws InvalidStateException
+     * @throws RequestException
      */
     public function handleCallback(string $state, string $code): void
     {
@@ -67,8 +80,114 @@ class TwitterService
             throw new InvalidStateException();
         }
 
-        $model = app(XForLaravelServiceProvider::$userModel);
-        $model->twitter_token = $code;
+        // Store the refresh token and get access token
+        $response = $this->getAccessTokenFromAuth($state, $code);
+        if (config('x-for-laravel.debug')) {
+            Log::info('Twitter callback - access token data:', [
+                'response' => $response,
+            ]);
+        }
+
+        $model = app(XForLaravelServiceProvider::$userModel)->find(auth()->id());
+        $model->twitter_token = (object) [
+            'scope' => $response['scope'],
+            'access_token' => $response['access_token'],
+            'refresh_token' => $response['refresh_token'],
+            'expires_in' => now()->addSeconds($response['expires_in']),
+        ];
         $model->save();
+    }
+
+    /**
+     * Get the access token from the returned code
+     *
+     *
+     * @return array ['token_type', 'expires_in', 'access_token', 'scope', 'refresh_token']
+     *
+     * @throws ConnectionException
+     * @throws RequestException
+     */
+    public function getAccessTokenFromAuth(string $state, string $code): array
+    {
+        return Http::asForm()
+            ->withHeaders([
+                'Authorization' => 'Basic '.base64_encode(config('x-for-laravel.client_id').':'.config('x-for-laravel.client_secret')),
+            ])
+            ->post(
+                url: 'https://api.twitter.com/2/oauth2/token',
+                data: [
+                    'code' => $code,
+                    'grant_type' => 'authorization_code',
+                    'code_verifier' => $state,
+                    'client_id' => config('x-for-laravel.client_id'),
+                    'redirect_uri' => url()->route('twitter.callback'),
+                ]
+            )
+            ->throw()
+            ->json();
+    }
+
+    public function fetchOrUpdateAccessToken(Model $model): string
+    {
+        $token = $model->twitter_token;
+        $expires = $token->expires_in;
+        if ($expires->isAfter(now()->addMinutes(5))) {
+            $response = $this->refreshAccessToken($token->refresh_token);
+            if (config('x-for-laravel.debug')) {
+                Log::info('Twitter callback - access token data:', [
+                    'response' => $response,
+                ]);
+            }
+            $model->twitter_token = (object) [
+                'scope' => $response['scope'],
+                'access_token' => $response['access_token'],
+                'refresh_token' => $response['refresh_token'],
+                'expires_in' => now()->addSeconds($response['expires_in']),
+            ];
+            $model->save();
+        }
+
+        return $model->twitter_token->access_token;
+    }
+
+    public function refreshAccessToken($refresh_token)
+    {
+        return Http::asForm()
+            ->withHeaders([
+                'Authorization' => 'Basic '.base64_encode(config('x-for-laravel.client_id').':'.config('x-for-laravel.client_secret')),
+            ])
+            ->post(
+                url: 'https://api.twitter.com/2/oauth2/token',
+                data: [
+                    'refresh_token' => $refresh_token,
+                    'grant_type' => 'refresh_token',
+                    //                    'client_id' => config('x-for-laravel.client_id'),
+                    //                    'redirect_uri' => url()->route('twitter.callback'),
+                ]
+            )->throw()
+            ->json();
+    }
+
+    public function revoke($token): void
+    {
+        try {
+            Http::asForm()
+                ->withHeaders([
+                    'Authorization' => 'Basic '.base64_encode(config('x-for-laravel.client_id').':'.config('x-for-laravel.client_secret')),
+                ])
+                ->post(
+                    url: 'https://api.twitter.com/2/oauth2/revoke',
+                    data: [
+                        'token' => $token,
+                    ]
+                );
+        } catch (RequestException $e) {
+            // Fail Silently
+            if (config('x-for-laravel.debug')) {
+                Log::error('Twitter revoke failed:', [
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
     }
 }

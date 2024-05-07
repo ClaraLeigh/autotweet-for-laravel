@@ -4,6 +4,8 @@ namespace ClaraLeigh\XForLaravel\Http\Controllers;
 
 use ClaraLeigh\XForLaravel\Exceptions\InvalidStateException;
 use ClaraLeigh\XForLaravel\Services\TwitterService;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -21,7 +23,24 @@ class TwitterAuthController extends Controller
     public function redirectToTwitter(TwitterService $service): RedirectResponse
     {
         return Redirect::to(
-            $service->prepareAuthorizationUrl()
+            path: $service->prepareAuthorizationUrl()
+        );
+    }
+
+    public function revokeAccess(TwitterService $service): RedirectResponse
+    {
+        $user = auth()->user();
+        if (! empty($user->twitter_token)) {
+            $service->revoke($user->twitter_token->refresh_token);
+            $user->twitter_token = null;
+            $user->save();
+        }
+
+        return Redirect::to(
+            path: config('x-for-laravel.redirect_path')
+        )->with(
+            key: 'status',
+            value: 'Twitter account successfully disconnected!'
         );
     }
 
@@ -29,7 +48,10 @@ class TwitterAuthController extends Controller
      * Obtain the user information from Twitter after authentication.
      *
      *
+     *
      * @throws InvalidStateException
+     * @throws ConnectionException
+     * @throws RequestException
      */
     public function handleTwitterCallback(Request $request, TwitterService $service): RedirectResponse
     {
@@ -39,7 +61,7 @@ class TwitterAuthController extends Controller
         );
 
         return Redirect::to(
-            path: config('services.x-for-laravel.redirect_path')
+            path: config('x-for-laravel.redirect_path')
         )->with(
             key: 'status',
             value: 'Twitter account successfully connected!'

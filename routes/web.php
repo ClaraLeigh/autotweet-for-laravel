@@ -3,13 +3,19 @@
 use ClaraLeigh\XForLaravel\Http\Controllers\TwitterAuthController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['web', 'guard:customer', 'auth:customer'])->group(function () {
     Route::get(
-        uri: 'auth/twitter',
+        uri: 'oauth2/twitter',
         action: [TwitterAuthController::class, 'redirectToTwitter']
-    )->name('twitter.login');
+    )->name('twitter.authorize');
+
     Route::get(
-        uri: 'auth/twitter/callback',
+        uri: 'oauth2/twitter/revoke',
+        action: [TwitterAuthController::class, 'revokeAccess']
+    )->name('twitter.revoke');
+
+    Route::get(
+        uri: 'oauth2/twitter/callback',
         action: [TwitterAuthController::class, 'handleTwitterCallback']
     )->name('twitter.callback');
 });
