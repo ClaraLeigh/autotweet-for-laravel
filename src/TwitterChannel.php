@@ -45,7 +45,7 @@ class TwitterChannel
         );
 
         if ($this->service->api->getLastHttpCode() !== 201) {
-//            dd($this->service->api->getLastHttpCode(), $this->service->api->getLastApiPath(), $this->service->api->getResponse());
+            //            dd($this->service->api->getLastHttpCode(), $this->service->api->getLastApiPath(), $this->service->api->getResponse());
             throw CouldNotSendNotification::serviceRespondsNotSuccessful($this->service->api->getLastBody());
         }
 
