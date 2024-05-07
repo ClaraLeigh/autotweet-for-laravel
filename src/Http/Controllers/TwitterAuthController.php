@@ -30,11 +30,11 @@ class TwitterAuthController extends Controller
     public function revokeAccess(TwitterService $service): RedirectResponse
     {
         $user = auth()->user();
-        if (! empty($user->twitter_token)) {
+        if (! empty($user->twitter_token) && is_object($user->twitter_token) && isset($user->twitter_token->refresh_token)) {
             $service->revoke($user->twitter_token->refresh_token);
-            $user->twitter_token = null;
-            $user->save();
         }
+        $user->twitter_token = null;
+        $user->save();
 
         return Redirect::to(
             path: config('x-for-laravel.redirect_path')

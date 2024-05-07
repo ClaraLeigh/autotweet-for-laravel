@@ -21,11 +21,7 @@ class XForLaravelServiceProvider extends PackageServiceProvider
             ->give(function () {
                 $api = new TwitterOAuth(
                     consumerKey: config('x-for-laravel.client_id'),
-                    consumerSecret: config('x-for-laravel.client_secret'),
-                    //                    consumerKey: config('x-for-laravel.consumer_key'),
-                    //                    consumerSecret: config('x-for-laravel.consumer_secret'),
-                    oauthToken: config('x-for-laravel.access_token'),
-                    oauthTokenSecret: config('x-for-laravel.access_secret'),
+                    consumerSecret: config('x-for-laravel.client_secret')
                 );
                 $api->setApiVersion('2');
 
@@ -37,11 +33,6 @@ class XForLaravelServiceProvider extends PackageServiceProvider
 
     public function configurePackage(Package $package): void
     {
-        /*
-         * This class is a Package Service Provider
-         *
-         * More info: https://github.com/spatie/laravel-package-tools
-         */
         $package
             ->name('x-for-laravel')
             ->hasConfigFile()

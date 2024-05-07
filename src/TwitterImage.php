@@ -2,6 +2,9 @@
 
 namespace ClaraLeigh\XForLaravel;
 
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+
 readonly class TwitterImage
 {
     /**
@@ -17,5 +20,17 @@ readonly class TwitterImage
     public function getPath(): string
     {
         return $this->imagePath;
+    }
+
+    public static function createFromString($imagePath): TwitterImage
+    {
+        if (Str::contains($imagePath, 'http')) {
+            $path = 'twitter/'.uuid_create().'.jpg';
+            $image = Storage::put($path, file_get_contents($imagePath), 'public');
+
+            return new TwitterImage($path);
+        }
+
+        return new TwitterImage($imagePath);
     }
 }

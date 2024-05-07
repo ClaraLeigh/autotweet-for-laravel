@@ -12,6 +12,10 @@ class CouldNotSendNotification extends Exception
             return new self("Couldn't post notification. Response: ".$response->error);
         }
 
+        if (empty($response->detail)) {
+            return new self("Couldn't post notification.");
+        }
+
         $responseBody = print_r($response->detail, true);
 
         return new self("Couldn't post notification. Response: ".$responseBody);
