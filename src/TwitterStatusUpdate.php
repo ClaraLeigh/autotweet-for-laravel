@@ -39,7 +39,7 @@ class TwitterStatusUpdate extends TwitterMessage
         $images = is_array($images) ? $images : [$images];
 
         collect($images)->each(function ($image) {
-            $this->images[] = new TwitterImage($image);
+            $this->images[] = TwitterImage::createFromString($image);
         });
 
         return $this;

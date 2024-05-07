@@ -2,7 +2,6 @@
 
 namespace ClaraLeigh\XForLaravel;
 
-use Abraham\TwitterOAuth\TwitterOAuth;
 use ClaraLeigh\XForLaravel\Events\TweetPosted;
 use ClaraLeigh\XForLaravel\Exceptions\CouldNotSendNotification;
 use ClaraLeigh\XForLaravel\Models\TweetLog;
@@ -33,7 +32,7 @@ class TwitterChannel
         );
 
         $twitterMessage = $notification->toTwitter($notifiable);
-        $twitterMessage = $this->addImagesIfGiven($twitterMessage);
+        //        $twitterMessage = $this->addImagesIfGiven($twitterMessage);
 
         $requestBody = $twitterMessage->getRequestBody();
 
@@ -46,6 +45,7 @@ class TwitterChannel
         );
 
         if ($this->service->api->getLastHttpCode() !== 201) {
+//            dd($this->service->api->getLastHttpCode(), $this->service->api->getLastApiPath(), $this->service->api->getResponse());
             throw CouldNotSendNotification::serviceRespondsNotSuccessful($this->service->api->getLastBody());
         }
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ClaraLeigh\XForLaravel\Services;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
+use Carbon\Carbon;
 use ClaraLeigh\XForLaravel\Exceptions\InvalidStateException;
 use ClaraLeigh\XForLaravel\XForLaravelServiceProvider;
 use Illuminate\Database\Eloquent\Model;
@@ -32,7 +33,7 @@ class TwitterService
             'scope' => 'tweet.read users.read tweet.write offline.access', // 'tweet.read users.read tweet.write offline.access
             'response_type' => 'code',
             'client_id' => config('x-for-laravel.client_id'),
-            'redirect_uri' => url()->route('twitter.callback'), //url(config('x-for-laravel.callback_url')),
+            'redirect_uri' => url()->route('twitter.callback'),
             'state' => $state, // This is a random string that you should validate when the user is redirected back to your app, to prevent CSRF attacks
             'code_challenge' => $state, // 'challenge', //$this->codeChallenge($state), //'S256'
             'code_challenge_method' => 'plain',
@@ -127,10 +128,13 @@ class TwitterService
             ->json();
     }
 
+    /**
+     * Fetch or update the access token.
+     */
     public function fetchOrUpdateAccessToken(Model $model): string
     {
         $token = $model->twitter_token;
-        $expires = $token->expires_in;
+        $expires = Carbon::createFromTimestamp($token->expires_in);
         if ($expires->isAfter(now()->addMinutes(5))) {
             $response = $this->refreshAccessToken($token->refresh_token);
             if (config('x-for-laravel.debug')) {
@@ -150,6 +154,14 @@ class TwitterService
         return $model->twitter_token->access_token;
     }
 
+    /**
+     * Refresh the access token.
+     *
+     * @return array|mixed
+     *
+     * @throws ConnectionException
+     * @throws RequestException
+     */
     public function refreshAccessToken($refresh_token)
     {
         return Http::asForm()
@@ -161,13 +173,17 @@ class TwitterService
                 data: [
                     'refresh_token' => $refresh_token,
                     'grant_type' => 'refresh_token',
-                    //                    'client_id' => config('x-for-laravel.client_id'),
-                    //                    'redirect_uri' => url()->route('twitter.callback'),
                 ]
             )->throw()
             ->json();
     }
 
+    /**
+     * Revoke the access token.
+     *
+     *
+     * @throws ConnectionException
+     */
     public function revoke($token): void
     {
         try {
