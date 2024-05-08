@@ -77,7 +77,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "AutotweetForLaravelServiceProvider"
+                "AutotweetForLaravel\\AutotweetForLaravelServiceProvider"
             ],
             "aliases": {
                 "AutotweetForLaravel": "ClaraLeigh\\AutotweetForLaravel\\Facades\\AutotweetForLaravel"
