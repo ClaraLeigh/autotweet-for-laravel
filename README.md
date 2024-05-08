@@ -5,15 +5,11 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/claraleigh/x-for-laravel/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/claraleigh/x-for-laravel/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/claraleigh/x-for-laravel.svg?style=flat-square)](https://packagist.org/packages/claraleigh/x-for-laravel)
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+This package provides a Twitter channel for Laravel notifications, allowing you to send tweets from your application.
 
 ## Support us
 
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/x-for-laravel.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/x-for-laravel)
-
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
+Hi there! If you're using this package, please consider supporting me on [GitHub Sponsors](https://github.com/sponsors/ClaraLeigh). It would mean a lot to me.
 
 ## Installation
 
@@ -45,24 +41,39 @@ You can publish the config file with:
 php artisan vendor:publish --tag="x-for-laravel-config"
 ```
 
-This is the contents of the published config file:
-
-```php
-return [
-];
-```
-
-Optionally, you can publish the views using
-
-```bash
-php artisan vendor:publish --tag="x-for-laravel-views"
-```
-
 ## Usage
 
+Update your Notification file's `via` method to include the Twitter channel:
+
 ```php
-$xForLaravel = new ClaraLeigh\XForLaravel();
-echo $xForLaravel->echoPhrase('Hello, ClaraLeigh!');
+public function via(object $notifiable): array
+{
+    return [TwitterChannel::class];
+}
+```
+
+Add a `toTwitter` method to your Notification file:
+
+```php
+public function toTwitter($notifiable): TwitterMessage
+{
+    $post = (new TwitterStatusUpdate(
+        __('Come see visit profile :url ❤️', ['url' => 'https://google.com/'])
+    ));
+   
+    // Optional: Add an image to the tweet
+    $post->withImage('path/to/image.jpg');
+
+    return $post;
+}
+```
+
+## Alternative User Model
+
+To change the default user model, update the table used in the migration file and add the following code to your service provider:
+
+```php
+XForLaravelServiceProvider::useUserModel(ExampleModel::class);
 ```
 
 ## Testing
@@ -87,6 +98,8 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 - [Clara Leigh](https://github.com/ClaraLeigh)
 - [All Contributors](../../contributors)
+
+Initially based on [Laravel Twitter Channel](https://github.com/laravel-notification-channels/twitter)
 
 ## License
 
