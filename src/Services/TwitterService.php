@@ -6,8 +6,8 @@ namespace ClaraLeigh\XForLaravel\Services;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
 use Carbon\Carbon;
-use ClaraLeigh\XForLaravel\Exceptions\InvalidStateException;
 use ClaraLeigh\XForLaravel\AutotweetForLaravelServiceProvider;
+use ClaraLeigh\XForLaravel\Exceptions\InvalidStateException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
