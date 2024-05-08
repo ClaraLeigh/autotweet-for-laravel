@@ -73,7 +73,7 @@ public function toTwitter($notifiable): TwitterMessage
 To change the default user model, update the table used in the migration file and add the following code to your service provider:
 
 ```php
-XForLaravelServiceProvider::useUserModel(ExampleModel::class);
+AutotweetForLaravelServiceProvider::useUserModel(ExampleModel::class);
 ```
 
 ## Testing

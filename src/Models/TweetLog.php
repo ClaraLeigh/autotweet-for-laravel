@@ -1,6 +1,6 @@
 <?php
 
-namespace ClaraLeigh\XForLaravel\Models;
+namespace ClaraLeigh\AutotweetForLaravel\Models;
 
 use Illuminate\Database\Eloquent\Model;
 

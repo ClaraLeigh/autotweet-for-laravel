@@ -1,6 +1,6 @@
 <?php
 
-use ClaraLeigh\XForLaravel\Http\Controllers\TwitterAuthController;
+use ClaraLeigh\AutotweetForLaravel\Http\Controllers\TwitterAuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(config('autotweet-for-laravel.middleware'))->group(function () {

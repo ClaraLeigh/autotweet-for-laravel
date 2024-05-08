@@ -1,6 +1,6 @@
 <?php
 
-namespace ClaraLeigh\XForLaravel;
+namespace ClaraLeigh\AutotweetForLaravel;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;

@@ -1,8 +1,8 @@
 <?php
 
-namespace ClaraLeigh\XForLaravel\Events;
+namespace ClaraLeigh\AutotweetForLaravel\Events;
 
-use ClaraLeigh\XForLaravel\Models\TweetLog;
+use ClaraLeigh\AutotweetForLaravel\Models\TweetLog;
 use Illuminate\Foundation\Events\Dispatchable;
 
 class TweetPosted

@@ -1,6 +1,6 @@
 <?php
 
-namespace ClaraLeigh\XForLaravel\Exceptions;
+namespace ClaraLeigh\AutotweetForLaravel\Exceptions;
 
 use Exception;
 

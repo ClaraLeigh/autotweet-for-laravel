@@ -1,9 +1,9 @@
 <?php
 
-namespace ClaraLeigh\XForLaravel\Http\Controllers;
+namespace ClaraLeigh\AutotweetForLaravel\Http\Controllers;
 
-use ClaraLeigh\XForLaravel\Exceptions\InvalidStateException;
-use ClaraLeigh\XForLaravel\Services\TwitterService;
+use ClaraLeigh\AutotweetForLaravel\Exceptions\InvalidStateException;
+use ClaraLeigh\AutotweetForLaravel\Services\TwitterService;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\RedirectResponse;

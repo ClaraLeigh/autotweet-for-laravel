@@ -1,6 +1,6 @@
 <?php
 
-namespace ClaraLeigh\XForLaravel;
+namespace ClaraLeigh\AutotweetForLaravel;
 
 abstract class TwitterMessage
 {

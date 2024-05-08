@@ -1,8 +1,8 @@
 <?php
 
-namespace ClaraLeigh\XForLaravel;
+namespace ClaraLeigh\AutotweetForLaravel;
 
-use ClaraLeigh\XForLaravel\Exceptions\CouldNotSendNotification;
+use ClaraLeigh\AutotweetForLaravel\Exceptions\CouldNotSendNotification;
 use Illuminate\Support\Collection;
 use Kylewm\Brevity\Brevity;
 

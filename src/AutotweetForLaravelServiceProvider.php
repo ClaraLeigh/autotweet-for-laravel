@@ -1,9 +1,9 @@
 <?php
 
-namespace ClaraLeigh\XForLaravel;
+namespace ClaraLeigh\AutotweetForLaravel;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
-use ClaraLeigh\XForLaravel\Services\TwitterService;
+use ClaraLeigh\AutotweetForLaravel\Services\TwitterService;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 

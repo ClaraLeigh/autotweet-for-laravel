@@ -1,11 +1,11 @@
 <?php
 
-namespace ClaraLeigh\XForLaravel;
+namespace ClaraLeigh\AutotweetForLaravel;
 
-use ClaraLeigh\XForLaravel\Events\TweetPosted;
-use ClaraLeigh\XForLaravel\Exceptions\CouldNotSendNotification;
-use ClaraLeigh\XForLaravel\Models\TweetLog;
-use ClaraLeigh\XForLaravel\Services\TwitterService;
+use ClaraLeigh\AutotweetForLaravel\Events\TweetPosted;
+use ClaraLeigh\AutotweetForLaravel\Exceptions\CouldNotSendNotification;
+use ClaraLeigh\AutotweetForLaravel\Models\TweetLog;
+use ClaraLeigh\AutotweetForLaravel\Services\TwitterService;
 use Illuminate\Notifications\Notification;
 
 class TwitterChannel

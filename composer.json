@@ -7,7 +7,7 @@
         "autotweet-for-laravel",
         "twitter"
     ],
-    "homepage": "https://github.com/claraleigh/x-for-laravel",
+    "homepage": "https://github.com/claraleigh/autotweet-for-laravel",
     "license": "MIT",
     "authors": [
         {
@@ -39,19 +39,19 @@
     },
     "autoload": {
         "psr-4": {
-            "ClaraLeigh\\XForLaravel\\": "src/",
-            "ClaraLeigh\\XForLaravel\\Database\\Factories\\": "database/factories/"
+            "ClaraLeigh\\AutotweetForLaravel\\": "src/",
+            "ClaraLeigh\\AutotweetForLaravel\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "ClaraLeigh\\XForLaravel\\Tests\\": "tests/",
+            "ClaraLeigh\\AutotweetForLaravel\\Tests\\": "tests/",
             "Workbench\\App\\": "workbench/app/"
         }
     },
     "scripts": {
         "post-autoload-dump": "@composer run prepare",
-        "clear": "@php vendor/bin/testbench package:purge-x-for-laravel --ansi",
+        "clear": "@php vendor/bin/testbench package:purge-autotweet-for-laravel --ansi",
         "prepare": "@php vendor/bin/testbench package:discover --ansi",
         "build": [
             "@composer run prepare",
@@ -80,7 +80,7 @@
                 "AutotweetForLaravelServiceProvider"
             ],
             "aliases": {
-                "XForLaravel": "ClaraLeigh\\XForLaravel\\Facades\\XForLaravel"
+                "AutotweetForLaravel": "ClaraLeigh\\AutotweetForLaravel\\Facades\\AutotweetForLaravel"
             }
         }
     },
