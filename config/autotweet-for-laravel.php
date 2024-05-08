@@ -7,5 +7,5 @@ return [
     // This is used to set the url to redirect to after login
     'redirect_path' => env('TWITTER_REDIRECT_PATH', '/'),
     // Your Twitter Route Middleware
-    'middleware' => ['web', 'guard:customer', 'auth:customer'],
+    'middleware' => ['web', 'guard', 'auth'],
 ];
