@@ -1,10 +1,10 @@
 {
-    "name": "claraleigh/x-for-laravel",
+    "name": "claraleigh/autotweet-for-laravel",
     "description": "Auto tweets for Laravel using OAuth",
     "keywords": [
         "Clara Leigh",
         "laravel",
-        "x-for-laravel",
+        "autotweet-for-laravel",
         "twitter"
     ],
     "homepage": "https://github.com/claraleigh/x-for-laravel",
@@ -77,7 +77,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "ClaraLeigh\\XForLaravel\\XForLaravelServiceProvider"
+                "AutotweetForLaravelServiceProvider"
             ],
             "aliases": {
                 "XForLaravel": "ClaraLeigh\\XForLaravel\\Facades\\XForLaravel"

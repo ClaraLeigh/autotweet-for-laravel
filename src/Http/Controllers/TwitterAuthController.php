@@ -37,7 +37,7 @@ class TwitterAuthController extends Controller
         $user->save();
 
         return Redirect::to(
-            path: config('x-for-laravel.redirect_path')
+            path: config('autotweet-for-laravel.redirect_path')
         )->with(
             key: 'status',
             value: 'Twitter account successfully disconnected!'
@@ -61,7 +61,7 @@ class TwitterAuthController extends Controller
         );
 
         return Redirect::to(
-            path: config('x-for-laravel.redirect_path')
+            path: config('autotweet-for-laravel.redirect_path')
         )->with(
             key: 'status',
             value: 'Twitter account successfully connected!'

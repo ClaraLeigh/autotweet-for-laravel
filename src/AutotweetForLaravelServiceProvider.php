@@ -7,7 +7,7 @@ use ClaraLeigh\XForLaravel\Services\TwitterService;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
-class XForLaravelServiceProvider extends PackageServiceProvider
+class AutotweetForLaravelServiceProvider extends PackageServiceProvider
 {
     public static $userModel = 'App\\Models\\User';
 
@@ -20,8 +20,8 @@ class XForLaravelServiceProvider extends PackageServiceProvider
             ->needs(TwitterOAuth::class)
             ->give(function () {
                 $api = new TwitterOAuth(
-                    consumerKey: config('x-for-laravel.client_id'),
-                    consumerSecret: config('x-for-laravel.client_secret')
+                    consumerKey: config('autotweet-for-laravel.client_id'),
+                    consumerSecret: config('autotweet-for-laravel.client_secret')
                 );
                 $api->setApiVersion('2');
 
@@ -34,10 +34,10 @@ class XForLaravelServiceProvider extends PackageServiceProvider
     public function configurePackage(Package $package): void
     {
         $package
-            ->name('x-for-laravel')
+            ->name('autotweet-for-laravel')
             ->hasConfigFile()
             ->hasRoute('web')
-            ->hasMigration('create_x_for_laravel_table');
+            ->hasMigration('create_autotweet_for_laravel_table');
     }
 
     /**

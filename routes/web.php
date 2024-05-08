@@ -3,7 +3,7 @@
 use ClaraLeigh\XForLaravel\Http\Controllers\TwitterAuthController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['web', 'guard:customer', 'auth:customer'])->group(function () {
+Route::middleware(config('autotweet-for-laravel.middleware'))->group(function () {
     Route::get(
         uri: 'oauth2/twitter',
         action: [TwitterAuthController::class, 'redirectToTwitter']

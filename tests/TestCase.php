@@ -2,7 +2,7 @@
 
 namespace ClaraLeigh\XForLaravel\Tests;
 
-use ClaraLeigh\XForLaravel\XForLaravelServiceProvider;
+use ClaraLeigh\XForLaravel\AutotweetForLaravelServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
 
@@ -20,7 +20,7 @@ class TestCase extends Orchestra
     protected function getPackageProviders($app)
     {
         return [
-            XForLaravelServiceProvider::class,
+            AutotweetForLaravelServiceProvider::class,
         ];
     }
 
@@ -29,7 +29,7 @@ class TestCase extends Orchestra
         config()->set('database.default', 'testing');
 
         /*
-        $migration = include __DIR__.'/../database/migrations/create_x-for-laravel_table.php.stub';
+        $migration = include __DIR__.'/../database/migrations/create_autotweet-for-laravel_table.php.stub';
         $migration->up();
         */
     }
