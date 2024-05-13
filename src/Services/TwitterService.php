@@ -134,8 +134,12 @@ class TwitterService
     public function fetchOrUpdateAccessToken(Model $model): string
     {
         $token = $model->twitter_token;
-        $expires = Carbon::createFromTimestamp($token->expires_in);
-        if ($expires->isAfter(now()->addMinutes(5))) {
+        $expires = Carbon::parse($token->expires_in);
+        if (
+            now()
+                ->addMinutes(5)
+                ->isAfter($expires)
+        ) {
             $response = $this->refreshAccessToken($token->refresh_token);
             if (config('autotweet-for-laravel.debug')) {
                 Log::info('Twitter callback - access token data:', [
