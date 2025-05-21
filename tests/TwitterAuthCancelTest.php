@@ -14,7 +14,7 @@ it('redirects when OAuth is cancelled', function () {
     $service = Mockery::mock(TwitterService::class);
     $service->shouldNotReceive('handleCallback');
 
-    $controller = new TwitterAuthController();
+    $controller = new TwitterAuthController;
     $response = $controller->handleTwitterCallback($request, $service);
 
     expect($response->getTargetUrl())->toBe(url('/'));

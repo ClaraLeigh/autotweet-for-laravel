@@ -6,9 +6,7 @@ abstract class TwitterMessage
 {
     public bool $isJsonRequest = true;
 
-    public function __construct(protected string $content)
-    {
-    }
+    public function __construct(protected string $content) {}
 
     public function getContent(): string
     {
