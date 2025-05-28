@@ -17,9 +17,7 @@ use Random\RandomException;
 
 class TwitterService
 {
-    public function __construct(public TwitterOAuth $api)
-    {
-    }
+    public function __construct(public TwitterOAuth $api) {}
 
     /**
      * Prepare the authorization URL.
@@ -78,7 +76,7 @@ class TwitterService
     {
         // Validate the state
         if ($state !== session('twitter_state')) {
-            throw new InvalidStateException();
+            throw new InvalidStateException;
         }
 
         // Store the refresh token and get access token

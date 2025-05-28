@@ -55,6 +55,15 @@ class TwitterAuthController extends Controller
      */
     public function handleTwitterCallback(Request $request, TwitterService $service): RedirectResponse
     {
+        if ($request->has('error') || ! $request->filled('code')) {
+            return Redirect::to(
+                path: config('autotweet-for-laravel.redirect_path')
+            )->with(
+                key: 'error',
+                value: 'Twitter authentication cancelled.'
+            );
+        }
+
         $service->handleCallback(
             state: $request->get('state'),
             code: $request->get('code')

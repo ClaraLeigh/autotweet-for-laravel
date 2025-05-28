@@ -12,6 +12,5 @@ class TweetPosted
     public function __construct(
         public mixed $notifiable,
         public TweetLog $tweetLog
-    ) {
-    }
+    ) {}
 }

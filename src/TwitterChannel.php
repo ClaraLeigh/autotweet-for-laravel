@@ -10,9 +10,7 @@ use Illuminate\Notifications\Notification;
 
 class TwitterChannel
 {
-    public function __construct(protected TwitterService $service)
-    {
-    }
+    public function __construct(protected TwitterService $service) {}
 
     /**
      * Send the given notification.
@@ -49,7 +47,7 @@ class TwitterChannel
             throw CouldNotSendNotification::serviceRespondsNotSuccessful($this->service->api->getLastBody());
         }
 
-        $tweetLog = new TweetLog();
+        $tweetLog = new TweetLog;
         $tweetLog->fill([
             'tweet_id' => $twitterApiResponse->data->id,
             'user_id' => $notifiable->id,

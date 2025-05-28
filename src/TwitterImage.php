@@ -10,9 +10,7 @@ readonly class TwitterImage
     /**
      * TwitterImage constructor.
      */
-    public function __construct(private string $imagePath)
-    {
-    }
+    public function __construct(private string $imagePath) {}
 
     /**
      * Get the image path.
