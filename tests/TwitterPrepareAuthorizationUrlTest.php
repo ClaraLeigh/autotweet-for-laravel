@@ -1,7 +1,7 @@
 <?php
 
-use ClaraLeigh\AutotweetForLaravel\Services\TwitterService;
 use Abraham\TwitterOAuth\TwitterOAuth;
+use ClaraLeigh\AutotweetForLaravel\Services\TwitterService;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
