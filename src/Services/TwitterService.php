@@ -26,27 +26,32 @@ class TwitterService
      */
     public function prepareAuthorizationUrl(): string
     {
-        $state = $this->state();
+        $state = $this->randomString();
+        $verifier = $this->randomString();
+
         $parameters = [
-            'scope' => 'tweet.read users.read tweet.write offline.access', // 'tweet.read users.read tweet.write offline.access
+            'scope' => 'tweet.read users.read tweet.write offline.access',
             'response_type' => 'code',
             'client_id' => config('autotweet-for-laravel.client_id'),
             'redirect_uri' => url()->route('twitter.callback'),
-            'state' => $state, // This is a random string that you should validate when the user is redirected back to your app, to prevent CSRF attacks
-            'code_challenge' => $state, // 'challenge', //$this->codeChallenge($state), //'S256'
-            'code_challenge_method' => 'plain',
+            'state' => $state,
+            'code_challenge' => $this->codeChallenge($verifier),
+            'code_challenge_method' => 'S256',
         ];
-        session(['twitter_state' => $state]);
+        session([
+            'twitter_state' => $state,
+            'twitter_code_verifier' => $verifier,
+        ]);
 
         return 'https://twitter.com/i/oauth2/authorize?'.http_build_query($parameters);
     }
 
     /**
-     * Generate a random state.
+     * Generate a cryptographically secure random string.
      *
      * @throws RandomException
      */
-    protected function state(): string
+    protected function randomString(): string
     {
         // CSRF protection
         return bin2hex(random_bytes(16));
@@ -72,15 +77,20 @@ class TwitterService
      * @throws InvalidStateException
      * @throws RequestException
      */
-    public function handleCallback(string $state, string $code): void
+    public function handleCallback(string $state, ?string $code): void
     {
+        if ($code === null) {
+            // No authorization code was provided. Nothing to do.
+            return;
+        }
         // Validate the state
         if ($state !== session('twitter_state')) {
             throw new InvalidStateException;
         }
 
         // Store the refresh token and get access token
-        $response = $this->getAccessTokenFromAuth($state, $code);
+        $verifier = (string) session('twitter_code_verifier');
+        $response = $this->getAccessTokenFromAuth($verifier, $code);
         if (config('autotweet-for-laravel.debug')) {
             Log::info('Twitter callback - access token data:', [
                 'response' => $response,
@@ -106,7 +116,7 @@ class TwitterService
      * @throws ConnectionException
      * @throws RequestException
      */
-    public function getAccessTokenFromAuth(string $state, string $code): array
+    public function getAccessTokenFromAuth(string $verifier, string $code): array
     {
         return Http::asForm()
             ->withHeaders([
@@ -117,7 +127,7 @@ class TwitterService
                 data: [
                     'code' => $code,
                     'grant_type' => 'authorization_code',
-                    'code_verifier' => $state,
+                    'code_verifier' => $verifier,
                     'client_id' => config('autotweet-for-laravel.client_id'),
                     'redirect_uri' => url()->route('twitter.callback'),
                 ]
