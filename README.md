@@ -7,6 +7,11 @@
 
 This package provides a Twitter channel for Laravel notifications, allowing you to send tweets from your application.
 
+## Requirements
+
+- PHP 8.2 or higher
+- Laravel 10 or 11
+
 ## Support us
 
 Hi there! If you're using this package, please consider supporting me on [GitHub Sponsors](https://github.com/sponsors/ClaraLeigh). It would mean a lot to me.
