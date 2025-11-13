@@ -58,7 +58,7 @@ class TwitterStatusUpdate extends TwitterMessage
      */
     public function getRequestBody(): array
     {
-        $body = ['text' => $this->getContent()];
+        $body = ['text' => str_replace('@youpay_official', '@youpay', $this->getContent())];
 
         $mediaIds = $this->imageIds instanceof Collection ? $this->imageIds->values() : collect();
 
