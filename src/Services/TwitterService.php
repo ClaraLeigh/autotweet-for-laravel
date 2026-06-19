@@ -38,7 +38,7 @@ class TwitterService
         ];
         session(['twitter_state' => $state]);
 
-        return 'https://twitter.com/i/oauth2/authorize?'.http_build_query($parameters);
+        return 'https://x.com/i/oauth2/authorize?'.http_build_query($parameters);
     }
 
     /**
